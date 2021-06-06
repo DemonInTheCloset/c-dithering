@@ -155,13 +155,22 @@ struct png_header_chunk {
   uint32_t crc32;
 } __attribute((packed));
 
+static struct png_header_chunk to_png_header_chunk(struct png_chunk *chunk) {
+  struct png_header_chunk header = *((struct png_header_chunk *)chunk);
+
+  header.img_w = __builtin_bswap32(header.img_w);
+  header.img_h = __builtin_bswap32(header.img_h);
+
+  return header;
+}
+
 void print_png_chunk_info(struct png_chunk *chunk) {
   uint32_t crc = (chunk->data[chunk->length + 0] << 6) | (chunk->data[chunk->length + 1] << 4)
                  | (chunk->data[chunk->length + 2] << 2) | (chunk->data[chunk->length + 3] << 0);
   printf("%#08X : %.4s : %#08X\n", chunk->length, chunk->chunk_type, crc);
 
   if (png_chunck_is_of_type(chunk, "IHDR") && chunk->length == 13) {
-    struct png_header_chunk header = *(struct png_header_chunk *)chunk;
+    struct png_header_chunk header = to_png_header_chunk(chunk);
     printf("size %ux%u : depth %u : color type %u : compression %u : filter %u : interlace %u\n",
            header.img_w, header.img_h, header.bit_depth, header.color_type,
            header.compression_method, header.filter_method, header.interlace_method);
