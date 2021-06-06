@@ -1,3 +1,5 @@
+#include "pngio.h"
+
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,7 +51,11 @@ static struct args get_args(int argc, char **argv) {
 }
 
 int main(int argc, char **argv) {
-  // struct args args = get_args(argc, argv);
+  struct args args = get_args(argc, argv);
+
+  struct png_img img = png_read(args.src);
+
+  print_png_img_headers(img);
 
   return EXIT_SUCCESS;
 }
