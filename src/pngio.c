@@ -138,7 +138,7 @@ void free_png_img(struct png_img img) {
 
 void print_png_header(struct png_header header) {
   printf("%#02x : %.3s : 0x%02x%02x : %#02x : %#02x\n", header.MARK, header.PNG, header.DOS_CRLF[0],
-         header.DOS_CRLF[1], header.DOS_EOF[0], header.UNX_LF[1]);
+         header.DOS_CRLF[1], header.DOS_EOF[0], header.UNX_LF[0]);
 }
 
 void print_png_chunk_info(struct png_chunk *chunk) {
