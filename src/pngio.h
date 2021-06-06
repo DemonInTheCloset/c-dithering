@@ -32,16 +32,16 @@ struct png_img {
   struct png_chunk **chunks;
 };
 
-static struct png_chunk *make_chunk(uint32_t length);
+struct png_chunk *make_chunk(uint32_t length);
 
-static uint32_t chunck_crc(struct png_chunk *chunk);
+uint32_t chunck_crc(struct png_chunk *chunk);
 
-static struct png_img png_read(const char *path);
+struct png_img png_read(const char *path);
 
-static void free_png_img(struct png_img img);
+void free_png_img(struct png_img img);
 
-static void print_png_header(struct png_header header);
+void print_png_header(struct png_header header);
 
-static void print_png_chunk_info(struct png_chunk *chunk);
+void print_png_chunk_info(struct png_chunk *chunk);
 
-static void print_png_img_headers(struct png_img img);
+void print_png_img_headers(struct png_img img);
