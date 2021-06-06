@@ -5,6 +5,12 @@
 #include <stdlib.h>
 #include <string.h>
 
+enum PNG_COLOR_TYPE { PNG_CT_GS = 0, PNG_CT_TC = 2, PNG_CT_IX = 3, PNG_CT_GSA = 4, PNG_CT_TCA = 6 };
+
+enum PNG_FILTERING { PNG_F_NONE = 0, PNG_F_SUB = 1, PNG_F_UP = 2, PNG_F_AVG = 3, PNG_F_PAETH = 4 };
+
+enum PNG_INTERLACING { PNG_I_NONE = 0, PNG_I_ADAM7 = 1 };
+
 struct png_header {
   uint8_t MARK;
   char PNG[3];
