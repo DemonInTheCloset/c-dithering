@@ -44,6 +44,8 @@ static int png_read_chunk(FILE *file, struct png_chunk **chunk) {
     return 1;
   }
 
+  chunk_header.length = __builtin_bswap32(chunk_header.length);
+
   *chunk = make_chunk(chunk_header.length);
 
   if (!chunk) {
@@ -135,8 +137,8 @@ static void free_png_img(struct png_img img) {
 }
 
 static void print_png_header(struct png_header header) {
-  printf("%#02x : %c%c%c : 0x%02x%02x : %#02x : %#02x\n", header.MARK, header.PNG[0], header.PNG[1],
-         header.PNG[2], header.DOS_CRLF[0], header.DOS_CRLF[1], header.DOS_EOF[0], header.UNX_LF[1]);
+  printf("%#02x : %.3s : 0x%02x%02x : %#02x : %#02x\n", header.MARK, header.PNG, header.DOS_CRLF[0],
+         header.DOS_CRLF[1], header.DOS_EOF[0], header.UNX_LF[1]);
 }
 
 static void print_png_chunk_info(struct png_chunk *chunk) {
