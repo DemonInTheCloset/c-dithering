@@ -114,9 +114,6 @@ struct png_img png_read(const char *path) {
 
     if ((err = png_read_chunk(src, &img.chunks[n++])) != 0) break;
 
-    char chunk_type[4] = {img.chunks[n - 1]->chunk_type[0], img.chunks[n - 1]->chunk_type[1],
-                          img.chunks[n - 1]->chunk_type[2], img.chunks[n - 1]->chunk_type[3]};
-
     // Reached EOF
     if (png_chunck_is_of_type(img.chunks[n - 1], "IEND")) break;
   }
