@@ -1,5 +1,10 @@
 #include "pngio.h"
 
+bool png_chunck_is_of_type(const struct png_chunk *chunk, const char type[4]) {
+  return (chunk->chunk_type[0] == type[0]) & (chunk->chunk_type[1] == type[1])
+         & (chunk->chunk_type[2] == type[2]) & (chunk->chunk_type[3] == type[3]);
+}
+
 struct png_chunk *make_chunk(uint32_t length) {
   struct png_chunk *chunk = (struct png_chunk *)malloc(sizeof(struct png_chunk) + 4 + length);
 
@@ -113,8 +118,7 @@ struct png_img png_read(const char *path) {
                           img.chunks[n - 1]->chunk_type[2], img.chunks[n - 1]->chunk_type[3]};
 
     // Reached EOF
-    if (chunk_type[0] == 'I' && chunk_type[1] == 'E' && chunk_type[2] == 'N' && chunk_type[3] == 'D')
-      break;
+    if (png_chunck_is_of_type(img.chunks[n - 1], "IEND")) break;
   }
   img.num_chunks = n;
 
@@ -141,10 +145,30 @@ void print_png_header(struct png_header header) {
          header.DOS_CRLF[1], header.DOS_EOF[0], header.UNX_LF[0]);
 }
 
+struct png_header_chunk {
+  uint32_t length;
+  char chunk_type[4];
+  uint32_t img_w;
+  uint32_t img_h;
+  uint8_t bit_depth;
+  uint8_t color_type;
+  uint8_t compression_method;
+  uint8_t filter_method;
+  uint8_t interlace_method;
+  uint32_t crc32;
+} __attribute((packed));
+
 void print_png_chunk_info(struct png_chunk *chunk) {
   uint32_t crc = (chunk->data[chunk->length + 0] << 6) | (chunk->data[chunk->length + 1] << 4)
                  | (chunk->data[chunk->length + 2] << 2) | (chunk->data[chunk->length + 3] << 0);
   printf("%#08X : %.4s : %#08X\n", chunk->length, chunk->chunk_type, crc);
+
+  if (png_chunck_is_of_type(chunk, "IHDR") && chunk->length == 13) {
+    struct png_header_chunk header = *(struct png_header_chunk *)chunk;
+    printf("size %ux%u : depth %u : color type %u : compression %u : filter %u : interlace %u\n",
+           header.img_w, header.img_h, header.bit_depth, header.color_type,
+           header.compression_method, header.filter_method, header.interlace_method);
+  }
 }
 
 void print_png_img_headers(struct png_img img) {

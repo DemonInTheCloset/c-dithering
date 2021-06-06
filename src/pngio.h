@@ -1,4 +1,5 @@
 #include <nmmintrin.h>
+#include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,6 +32,8 @@ struct png_img {
   size_t num_chunks;
   struct png_chunk **chunks;
 };
+
+bool png_chunck_is_of_type(const struct png_chunk *chunk, const char type[4]);
 
 struct png_chunk *make_chunk(uint32_t length);
 
