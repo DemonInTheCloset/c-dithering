@@ -1,6 +1,6 @@
 #include "pngio.h"
 
-static struct png_chunk *make_chunk(uint32_t length) {
+struct png_chunk *make_chunk(uint32_t length) {
   struct png_chunk *chunk = (struct png_chunk *)malloc(sizeof(struct png_chunk) + 4 + length);
 
   if (!chunk) {
@@ -12,7 +12,7 @@ static struct png_chunk *make_chunk(uint32_t length) {
   return chunk;
 }
 
-static uint32_t chunck_crc(struct png_chunk *chunk) {
+uint32_t chunck_crc(struct png_chunk *chunk) {
   uint32_t crc = (uint8_t)chunk->chunk_type[0];
 
   for (int i = 1; i < 4; ++i) {
@@ -68,7 +68,7 @@ static void free_chunks(size_t n, struct png_chunk *chunks[n]) {
   }
 }
 
-static struct png_img png_read(const char *path) {
+struct png_img png_read(const char *path) {
   struct png_img img;
   FILE *src;
   if ((src = fopen(path, "r")) == NULL) {
@@ -130,24 +130,24 @@ static struct png_img png_read(const char *path) {
   return img;
 }
 
-static void free_png_img(struct png_img img) {
+void free_png_img(struct png_img img) {
   free_chunks(img.num_chunks, img.chunks);
   free(img.chunks);
   img.chunks = NULL;
 }
 
-static void print_png_header(struct png_header header) {
+void print_png_header(struct png_header header) {
   printf("%#02x : %.3s : 0x%02x%02x : %#02x : %#02x\n", header.MARK, header.PNG, header.DOS_CRLF[0],
          header.DOS_CRLF[1], header.DOS_EOF[0], header.UNX_LF[1]);
 }
 
-static void print_png_chunk_info(struct png_chunk *chunk) {
+void print_png_chunk_info(struct png_chunk *chunk) {
   uint32_t crc = (chunk->data[chunk->length + 0] << 6) | (chunk->data[chunk->length + 1] << 4)
                  | (chunk->data[chunk->length + 2] << 2) | (chunk->data[chunk->length + 3] << 0);
   printf("%#08x : %.4s : %#08x\n", chunk->length, chunk->chunk_type, crc);
 }
 
-static void print_png_img_headers(struct png_img img) {
+void print_png_img_headers(struct png_img img) {
   print_png_header(img.header);
 
   printf("PNG image with %lu chunks:\n", img.num_chunks);
