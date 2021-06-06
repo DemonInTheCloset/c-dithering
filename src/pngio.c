@@ -137,14 +137,14 @@ void free_png_img(struct png_img img) {
 }
 
 void print_png_header(struct png_header header) {
-  printf("%#02x : %.3s : 0x%02x%02x : %#02x : %#02x\n", header.MARK, header.PNG, header.DOS_CRLF[0],
+  printf("%#02X : %.3s : 0x%02X%02X : %#02X : %#02X\n", header.MARK, header.PNG, header.DOS_CRLF[0],
          header.DOS_CRLF[1], header.DOS_EOF[0], header.UNX_LF[0]);
 }
 
 void print_png_chunk_info(struct png_chunk *chunk) {
   uint32_t crc = (chunk->data[chunk->length + 0] << 6) | (chunk->data[chunk->length + 1] << 4)
                  | (chunk->data[chunk->length + 2] << 2) | (chunk->data[chunk->length + 3] << 0);
-  printf("%#08x : %.4s : %#08x\n", chunk->length, chunk->chunk_type, crc);
+  printf("%#08X : %.4s : %#08X\n", chunk->length, chunk->chunk_type, crc);
 }
 
 void print_png_img_headers(struct png_img img) {
